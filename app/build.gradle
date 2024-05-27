@@ -7,6 +7,11 @@ android {
     namespace 'com.oelnooc.storesinfo'
     compileSdk 33
 
+    buildFeatures {
+        viewBinding = true
+        dataBinding true
+    }
+
     defaultConfig {
         applicationId "com.oelnooc.storesinfo"
         minSdk 24
