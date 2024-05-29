@@ -8,9 +8,9 @@ class FrogmiClient {
     companion object {
         private const val BASE_URL = "https://api.frogmi.com/"
 
-        fun getInstance(): FrogmiService {
+        fun getInstance(url: String = BASE_URL): FrogmiService {
             val retrofit = Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(url)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
             return retrofit.create(FrogmiService::class.java)
