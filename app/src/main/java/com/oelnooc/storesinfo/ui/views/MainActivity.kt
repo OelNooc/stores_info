@@ -24,9 +24,9 @@ class MainActivity : AppCompatActivity() {
         setupRecyclerView()
 
         viewModel.stores.observe(this, Observer { stores ->
-            if (storeAdapter.itemCount == 0) { // Primera carga
+            if (storeAdapter.itemCount == 0) {
                 storeAdapter.setStores(stores)
-            } else { // Cargas adicionales
+            } else {
                 storeAdapter.addStores(stores.takeLast(10))
             }
         })

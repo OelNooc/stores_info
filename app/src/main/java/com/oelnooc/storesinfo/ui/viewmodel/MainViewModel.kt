@@ -44,11 +44,11 @@ class MainViewModel : ViewModel() {
                     isLoading = false
                     if (response.isSuccessful) {
                         val callResponse = response.body()
-                        _stores.value?.clear() // Limpiar la lista antes de añadir nuevos elementos
+                        _stores.value?.clear()
                         callResponse?.data?.let { storeList ->
                             Log.d("MainViewModel", "Number of stores fetched: ${storeList.size}")
-                            _stores.value?.addAll(storeList.take(10)) // Asegurarse de solo agregar 10
-                            _stores.value = _stores.value // Trigger observers
+                            _stores.value?.addAll(storeList.take(10))
+                            _stores.value = _stores.value
                         }
                         _nextPageUrl.value = callResponse?.links?.next
                     }
@@ -76,7 +76,7 @@ class MainViewModel : ViewModel() {
                             callResponse?.data?.let { storeList ->
                                 Log.d("MainViewModel", "Number of additional stores fetched: ${storeList.size}")
                                 _stores.value?.addAll(storeList.take(10))
-                                _stores.value = _stores.value // Trigger observers
+                                _stores.value = _stores.value
                             }
                             _nextPageUrl.value = callResponse?.links?.next
                         }
