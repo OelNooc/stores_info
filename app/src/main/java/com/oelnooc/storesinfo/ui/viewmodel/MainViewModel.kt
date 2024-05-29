@@ -1,6 +1,7 @@
 package com.oelnooc.storesinfo.ui.viewmodel
 
 import android.util.Log
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -11,9 +12,11 @@ import com.oelnooc.storesinfo.data.api.FrogmiService
 import com.oelnooc.storesinfo.data.application.CustomApplication
 import com.oelnooc.storesinfo.data.model.FrogmiResponse
 import com.oelnooc.storesinfo.data.model.Store
+import com.oelnooc.storesinfo.util.ResponseErrorsHandler
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
 
 class MainViewModel : ViewModel() {
@@ -30,11 +33,8 @@ class MainViewModel : ViewModel() {
     private val companyUUID = CustomApplication.instance.getString(R.string.company_uuid)
 
     private var isLoading = false
-    init {
-        fetchFirstPage()
-    }
 
-    private fun fetchFirstPage() {
+    fun fetchFirstPage(view: View) {
         if (isLoading) return
         isLoading = true
         viewModelScope.launch {
@@ -51,18 +51,24 @@ class MainViewModel : ViewModel() {
                             _stores.value = _stores.value
                         }
                         _nextPageUrl.value = callResponse?.links?.next
+                    } else {
+                        ResponseErrorsHandler.handleHttpError(view, response.code(), response.message())
                     }
                 }
 
                 override fun onFailure(call: Call<FrogmiResponse>, t: Throwable) {
                     isLoading = false
-                    // Handle error
+                    if (t is HttpException) {
+                        ResponseErrorsHandler.handleHttpError(view, t.code(), t.message())
+                    } else {
+                        ResponseErrorsHandler.handleGenericError(view, t.message)
+                    }
                 }
             })
         }
     }
 
-    fun fetchNextPage() {
+    fun fetchNextPage(view: View) {
         if (isLoading || _nextPageUrl.value == null) return
         isLoading = true
         viewModelScope.launch {
@@ -79,12 +85,18 @@ class MainViewModel : ViewModel() {
                                 _stores.value = _stores.value
                             }
                             _nextPageUrl.value = callResponse?.links?.next
+                        } else {
+                            ResponseErrorsHandler.handleHttpError(view, response.code(), response.message())
                         }
                     }
 
                     override fun onFailure(call: Call<FrogmiResponse>, t: Throwable) {
                         isLoading = false
-                        // Handle error
+                        if (t is HttpException) {
+                            ResponseErrorsHandler.handleHttpError(view, t.code(), t.message())
+                        } else {
+                            ResponseErrorsHandler.handleGenericError(view, t.message)
+                        }
                     }
                 })
             }

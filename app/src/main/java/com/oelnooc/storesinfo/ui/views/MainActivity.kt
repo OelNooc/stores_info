@@ -36,10 +36,12 @@ class MainActivity : AppCompatActivity() {
                 super.onScrolled(recyclerView, dx, dy)
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 if (layoutManager.findLastVisibleItemPosition() == storeAdapter.itemCount - 1) {
-                    viewModel.fetchNextPage()
+                    viewModel.fetchNextPage(binding.root)
                 }
             }
         })
+
+        viewModel.fetchFirstPage(binding.root)
     }
 
     private fun setupRecyclerView() {
