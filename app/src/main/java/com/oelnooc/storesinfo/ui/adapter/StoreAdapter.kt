@@ -28,8 +28,14 @@ class StoreAdapter (private val stores: MutableList<Store>) : RecyclerView.Adapt
     override fun getItemCount(): Int = stores.size
 
     fun addStores(newStores: List<Store>) {
-        val previousSize = stores.size
-        stores.addAll(newStores)
-        notifyItemRangeInserted(previousSize, newStores.size)
+        val startPos = stores.size
+        stores.addAll(newStores.take(10))
+        notifyItemRangeInserted(startPos, newStores.size)
+    }
+
+    fun setStores(newStores: List<Store>) {
+        stores.clear()
+        stores.addAll(newStores.take(10))
+        notifyDataSetChanged()
     }
 }
